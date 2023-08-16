@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+   crossorigin=""/>
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+   crossorigin=""></script>
+
+</head>
+<body>
+
+    <h1>where is the ISS<h2>
+    <p>
+        latitude: <span id="lat"></span><br />
+        longitude: <span id="lon"></span><br />
+    <p>
+
+        <div style="height: 500px; width: 1000px;" id="map"></div>
+
+    <script>
+        const API_url = 'https://api.wheretheiss.at/v1/satellites/25544';
+        
+        const map = L.map('map').setView([0, 0], 1);
+        
+        
+        var myIcon = L.icon({
+            iconUrl: 'My project (23)',
+            iconSize: [38, 95],
+            iconAnchor: [22, 94],
+            popupAnchor: [-3, -76],
+            shadowUrl: 'my-icon-shadow.png',
+            shadowSize: [68, 95],
+            shadowAnchor: [22, 94]
+        });
+        
+        
+        const marker = L.marker([0, 0]).addTo(map);
+
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            minZoom: 2,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+
+        async function getISS()
+        {
+            const response = await fetch(API_url);
+            const data = await response.json();
+            const { latitude, longitude } = data;
+            
+            document.getElementById("lat").textContent = latitude;
+            document.getElementById("lon").textContent = longitude;
+            
+            console.log(latitude);
+            console.log(longitude);
+            
+            marker.setLatLng([latitude, longitude]);
+            
+            //the line below makes the trail of markers behind!
+            L.marker([latitude, longitude]).addTo(map);
+        }
+        getISS();
+        setInterval(getISS, 2000);
+
+
+
+        
+        
+
+        
+
+
+
+
+
+    </script>
+</body>
+</html>
